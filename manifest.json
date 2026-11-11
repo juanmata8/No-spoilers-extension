@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "ChatGPT Conversation Guard",
+  "description": "Checks ChatGPT answers and asks before revealing them.",
+  "version": "1.0.0",
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "http://127.0.0.1:3000/*"
+  ],
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_title": "Conversation Guard settings",
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

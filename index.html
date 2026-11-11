@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conversation Guard</title>
+  <style>
+    :root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #f7f9fc; }
+    * { box-sizing: border-box; } body { margin: 0; width: 390px; min-height: 520px; }
+    header { padding: 22px 24px 16px; background: #fff; border-bottom: 1px solid #e6eaf0; }
+    h1 { font-size: 19px; margin: 0 0 5px; } .subtitle { color: #647087; font-size: 12px; margin: 0; }
+    main { padding: 16px 18px 22px; } h2 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #718099; margin: 0 0 9px; }
+    .status { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-radius: 12px; background: #edf8f1; color: #177245; margin-bottom: 18px; font-size: 12px; }
+    .status strong { color: #132238; font-size: 14px; } .cards { display: grid; gap: 8px; }
+    .card { position: relative; border: 1px solid #dfe5ee; border-radius: 13px; padding: 13px; background: #fff; cursor: pointer; transition: .15s; }
+    .card:hover, .card.selected { border-color: #5278e8; box-shadow: 0 3px 12px #5278e81c; }
+    .card.premium { border-color: #d3a33c; background: linear-gradient(135deg,#fffdf5,#fff); }
+    .card-top { display: flex; justify-content: space-between; gap: 8px; } .name { font-weight: 700; font-size: 13px; }
+    .provider, .identifier, .description { color: #718099; font-size: 11px; margin-top: 3px; } .identifier { font-family: ui-monospace, monospace; font-size: 10px; } .accuracy { color: #167447; font-weight: 800; font-size: 18px; white-space: nowrap; }
+    .premium .accuracy { color: #a56a00; font-size: 22px; } .badge { display: inline-block; font-size: 10px; padding: 3px 7px; border-radius: 99px; background: #edf8f1; color: #177245; margin-top: 8px; }
+    .premium .badge { background: #fff0c7; color: #8b5a00; } .bar { height: 5px; background: #e9edf3; border-radius: 9px; margin-top: 10px; overflow: hidden; }
+    .fill { height: 100%; background: #51b681; border-radius: inherit; } .premium .fill { background: #d6a033; }
+    .config { display: none; margin-top: 18px; padding-top: 17px; border-top: 1px solid #e6eaf0; } .config.visible { display: block; }
+    .startup-error { display: none; margin: 0 0 14px; padding: 10px 12px; border-radius: 9px; background: #fff0f0; color: #a63b3b; font-size: 12px; }
+    label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 7px; } .key-row { display: flex; gap: 6px; }
+    input { min-width: 0; flex: 1; border: 1px solid #ccd4e0; border-radius: 8px; padding: 9px; font: inherit; font-size: 12px; }
+    button { border: 0; border-radius: 8px; padding: 9px 11px; background: #4268d8; color: #fff; font-weight: 700; cursor: pointer; } button.secondary { background: #edf0f5; color: #42516a; }
+    .actions { display: flex; gap: 7px; margin-top: 8px; } .message { min-height: 17px; font-size: 11px; margin-top: 8px; } .success { color: #177245; } .error { color: #ba3e3e; }
+    .configured { color: #177245; font-size: 11px; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <header><h1>Detection model</h1><p class="subtitle">Choose how Conversation Guard spots answers.</p></header>
+  <main>
+    <div class="status"><span>Currently active</span><strong id="active-model">Loading...</strong></div>
+    <div class="startup-error" id="startup-error"></div>
+    <h2>Compare accuracy</h2><div class="cards" id="cards"></div>
+    <section class="config" id="config">
+      <label id="key-label" for="api-key">Provider API key</label>
+      <p class="configured" id="configured"></p>
+      <div class="key-row"><input id="api-key" type="password" autocomplete="off" placeholder="Paste your key"><button class="secondary" id="toggle-key" type="button">Show</button></div>
+      <div class="actions"><button id="save-key" type="button">Save API key</button><button class="secondary" id="remove-key" type="button">Remove</button></div>
+      <div class="message" id="message" role="status"></div>
+    </section>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

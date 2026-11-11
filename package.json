@@ -1,0 +1,13 @@
+{
+  "name": "chatgpt-conversation-analysis",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Local backend for analysing ChatGPT conversations.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
