@@ -2,7 +2,7 @@ const http = require("node:http");
 
 const port = Number(process.env.PORT || 3000);
 const apiKey = process.env.GEMINI_API_KEY;
-const model = process.env.GEMINI_MODEL || "Antigravity";
+const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 const allowedOrigins = new Set([
   "https://chatgpt.com",
   "https://chat.openai.com"

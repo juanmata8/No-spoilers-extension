@@ -11,6 +11,12 @@ $env:GEMINI_API_KEY = "your-api-key"
 npm start
 ```
 
+Alternatively if operating from a Mac OS
+```powershell
+echo "GEMINI_API_KEY = your-api-key" >> .env
+npm start
+```
+
 The backend listens on `http://127.0.0.1:3000` and keeps the API key on the server.
 
 ## Load the extension

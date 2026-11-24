@@ -5,7 +5,7 @@
   "description": "Local backend for analysing ChatGPT conversations.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node --env-file=.env server.js"
   },
   "engines": {
     "node": ">=18"

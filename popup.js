@@ -27,9 +27,16 @@ function save(values) {
   });
 }
 
+function buildCards() {
+  cards.innerHTML = models.map(model => `<article class="card${model.premium ? " premium" : ""}" data-id="${model.id}" role="radio" tabindex="0" aria-checked="false"><div class="card-top"><div><div class="name">${model.name}</div><div class="provider">${model.provider}</div><div class="identifier">${model.id}</div></div><div class="accuracy">${model.accuracy}%</div></div>${model.description ? `<div class="description">${model.description}</div>` : ""}<span class="badge">${model.free ? "FREE · own key" : "PREMIUM · $1 / 100 answers"}</span><div class="bar"><div class="fill" style="width:${model.accuracy}%"></div></div></article>`).join("");
+}
+
 function render() {
-  cards.innerHTML = models.map(model => `<article class="card ${model.premium ? "premium " : ""}${model.id === selected ? "selected" : ""}" data-id="${model.id}"><div class="card-top"><div><div class="name">${model.name}</div><div class="provider">${model.provider}</div><div class="identifier">${model.id}</div></div><div class="accuracy">${model.accuracy}%</div></div>${model.description ? `<div class="description">${model.description}</div>` : ""}<span class="badge">${model.free ? "FREE · own key" : "PREMIUM · $1 / 100 answers"}</span><div class="bar"><div class="fill" style="width:${model.accuracy}%"></div></div></article>`).join("");
-  cards.querySelectorAll(".card").forEach(card => card.addEventListener("click", () => select(card.dataset.id)));
+  cards.querySelectorAll(".card").forEach(card => {
+    const isSelected = card.dataset.id === selected;
+    card.classList.toggle("selected", isSelected);
+    card.setAttribute("aria-checked", String(isSelected));
+  });
   const current = models.find(model => model.id === selected) || models[1];
   document.getElementById("active-model").textContent = current.name;
   if (current.free) {
@@ -44,6 +51,7 @@ function render() {
 
 async function select(id) {
   selected = id;
+  document.getElementById("message").textContent = "";
   try {
     await save({ selectedModel: id });
     render();
@@ -55,6 +63,30 @@ async function select(id) {
 document.getElementById("toggle-key").addEventListener("click", () => {
   key.type = key.type === "password" ? "text" : "password";
   document.getElementById("toggle-key").textContent = key.type === "password" ? "Show" : "Hide";
+});
+
+// Click a card to select it
+cards.addEventListener("click", e => {
+  const card = e.target.closest(".card");
+  if (card) select(card.dataset.id);
+});
+
+// Enter or Space selects a card that has keyboard focus
+cards.addEventListener("keydown", e => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const card = e.target.closest(".card");
+  if (!card) return;
+  e.preventDefault();
+  select(card.dataset.id);
+});
+
+// Make the glow follow the mouse
+cards.addEventListener("pointermove", e => {
+  const card = e.target.closest(".card");
+  if (!card) return;
+  const r = card.getBoundingClientRect();
+  card.style.setProperty("--x", `${e.clientX - r.left}px`);
+  card.style.setProperty("--y", `${e.clientY - r.top}px`);
 });
 
 document.getElementById("save-key").addEventListener("click", async () => {
@@ -97,6 +129,8 @@ chrome.storage.local.get(["selectedModel", "apiKeys"], settings => {
     return;
   }
   selected = settings.selectedModel || "gemini/gemini-flash-lite-latest";
+  if (!models.some(m => m.id === selected)) selected = models[1].id;
   keys = settings.apiKeys || {};
+  buildCards();
   render();
 });
