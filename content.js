@@ -24,7 +24,17 @@
       font: 600 14px system-ui; color: #1d2b4f; text-align: center;
     }
     .ns-loading { gap: 2px; }
-    .ns-prompt  { gap: 10px; flex-wrap: wrap; }
+    .ns-prompt  {
+      gap: 10px; padding: 20px;
+      flex-direction: column;          /* stack vertically */
+      justify-content: space-between;  /* header at top, buttons at bottom */
+    }
+    .ns-header { display: flex; flex-direction: column; gap: 4px;
+             flex: 1; justify-content: center; }
+    .ns-title    { font: 700 17px system-ui; }
+    .ns-subtitle { font: 400 13px system-ui; opacity: .7; }
+    .ns-actions  { display: flex; gap: 10px; justify-content: flex-start; }
+    .ns-prompt.ns-hint { justify-content: center; }
 
     /* ---- shared frosted glass ---- */
     .ns-loading::after, .ns-prompt::after {
@@ -59,14 +69,14 @@
       animation: ns-spin 3s linear infinite;
       pointer-events: none;
     }
-    // .ns-prompt::after {
-    //   border-color: rgba(255, 196, 92, 0.75);
-    //   box-shadow:
-    //     0 0 0 1px rgba(255, 196, 92, 0.35),       /* thin halo on the border */
-    //     0 0 18px 3px rgba(255, 180, 70, 0.35),    /* soft glow outside */
-    //     inset 0 0 14px rgba(255, 196, 92, 0.22),  /* soft glow just inside */
-    //     0 8px 32px rgba(31, 38, 135, 0.18);       /* original depth shadow */
-    // }
+    /* .ns-prompt::after {
+      border-color: rgba(255, 196, 92, 0.75);
+      box-shadow:
+        0 0 0 1px rgba(255, 196, 92, 0.35),        thin halo on the border
+        0 0 18px 3px rgba(255, 180, 70, 0.35),     soft glow outside
+        inset 0 0 14px rgba(255, 196, 92, 0.22),   soft glow just inside
+        0 8px 32px rgba(31, 38, 135, 0.18);        original depth shadow
+    } */
 
     /* ---- loading dots ---- */
     .ns-dot { display: inline-block; animation: ns-bounce 1.2s infinite ease-in-out; }
@@ -85,6 +95,12 @@
       transition: background .15s;
     }
     .ns-btn:hover { background: rgba(255, 255, 255, 0.6); }
+    .ns-btn { display: inline-flex; align-items: center; gap: 6px; }
+    .ns-icon {
+      width: 16px; height: 16px;
+      fill: none; stroke: currentColor; stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
 
     /* ---- dark mode ---- */
     @media (prefers-color-scheme: dark) {
@@ -138,7 +154,7 @@
     const banner = document.createElement("div");
     banner.setAttribute(provisionalBannerAttribute, "true");
     banner.className = "ns-loading";
-    banner.innerHTML = '<span>Analyzing ChatGPT response</span>' +
+    banner.innerHTML = '<span>Analyzing response</span>' +
     '<span class="ns-dot">.</span><span class="ns-dot">.</span><span class="ns-dot">.</span>';
     content.style.position = "relative";
     content.style.minHeight = "140px";
@@ -159,25 +175,49 @@
     banner.className = "ns-prompt";
 
     const text = document.createElement("span");
-    text.textContent = "The answer may be revealed in this response: do you want to see it or re-prompt?";
+    text.className = "ns-title";
+    text.textContent = "This reply may give the answer";
+
+    const text2 = document.createElement("span");
+    text2.className = "ns-subtitle";
+    text2.textContent = "Take some time to try and solve it yourself.";
 
     const yesButton = document.createElement("button");
     yesButton.type = "button";
-    yesButton.textContent = "Yes";
+    yesButton.innerHTML =
+      '<svg class="ns-icon" viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>' +
+        '<circle cx="12" cy="12" r="3"/>' +
+      '</svg>' +
+      '<span>Show</span>';
     yesButton.className = "ns-btn";
     yesButton.addEventListener("click", () => revealAnswer(content, banner));
 
     const noButton = document.createElement("button");
     noButton.type = "button";
-    noButton.textContent = "Re-prompt";
+    noButton.innerHTML =
+      '<svg class="ns-icon" viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M9 18h6"/>' +
+        '<path d="M10 22h4"/>' +
+        '<path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>' +
+      '</svg>' +
+      '<span>Re-prompt for hint</span>';
     noButton.className = "ns-btn";
     noButton.addEventListener("click", () => {
       text.textContent = "Prompt in a new way and continue learning.";
-      yesButton.remove();
-      noButton.remove();
+      actions.remove();
+      banner.classList.add("ns-hint");   // switch to vertical centering
     });
 
-    banner.append(text, yesButton, noButton);
+    const header = document.createElement("div");
+    header.className = "ns-header";
+    header.append(text, text2);
+
+    const actions = document.createElement("div");
+    actions.className = "ns-actions";
+    actions.append(yesButton, noButton);
+
+    banner.append(header, actions);
     content.style.position = "relative";
     content.append(banner);
   }
