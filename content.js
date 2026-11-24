@@ -7,7 +7,7 @@
   const answerBannerAttribute = "data-answer-banner";
   const provisionalBannerAttribute = "data-provisional-answer-banner";
   const classificationTimers = new WeakMap();
-  const classificationTimeouts = new WeakMap();
+  // const classificationTimeouts = new WeakMap();
 
   function injectStyles() {
   if (document.getElementById("ns-styles")) return;
@@ -182,45 +182,59 @@
     content.append(banner);
   }
 
+  // function classifyAnswer(question, answer, message) {
+  //   message.setAttribute(answerClassificationAttribute, "pending");
+  //   console.log("[Answer classification] Sending question and answer to the local server.");
+  //   const controller = new AbortController();
+  //   classificationTimeouts.set(message, setTimeout(() => controller.abort(), 15000));
+  //   fetch("http://127.0.0.1:3000/classify", {
+  //     body: JSON.stringify({ question, answer }),
+  //     headers: { "Content-Type": "application/json" },
+  //     method: "POST",
+  //     signal: controller.signal
+  //   })
+  //     .then((response) => {
+  //       return response.json().then((data) => {
+  //         if (!response.ok) {
+  //           throw new Error(data.error || `Classification request failed (${response.status})`);
+  //         }
+  //         return data;
+  //       });
+  //     })
+  //     .then((data) => {
+  //       clearTimeout(classificationTimeouts.get(message));
+  //       classificationTimeouts.delete(message);
+  //       message.setAttribute(answerClassificationAttribute, data.answersQuestion ? "yes" : "no");
+  //       if (data.answersQuestion) {
+  //         addAnswerBanner(message);
+  //       } else {
+  //         removeAnswerBanner(message);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       clearTimeout(classificationTimeouts.get(message));
+  //       classificationTimeouts.delete(message);
+  //       message.setAttribute(answerClassificationAttribute, "unavailable");
+  //       removeAnswerBanner(message);
+  //       if (error.name !== "AbortError") {
+  //         console.info("[Answer classification] Local analysis server is unavailable; the answer was left visible.");
+  //       }
+  //     });
+  // }
   function classifyAnswer(question, answer, message) {
-    message.setAttribute(answerClassificationAttribute, "pending");
-    console.log("[Answer classification] Sending question and answer to the local server.");
-    const controller = new AbortController();
-    classificationTimeouts.set(message, setTimeout(() => controller.abort(), 15000));
-    fetch("http://127.0.0.1:3000/classify", {
-      body: JSON.stringify({ question, answer }),
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-      signal: controller.signal
-    })
-      .then((response) => {
-        return response.json().then((data) => {
-          if (!response.ok) {
-            throw new Error(data.error || `Classification request failed (${response.status})`);
-          }
-          return data;
-        });
-      })
-      .then((data) => {
-        clearTimeout(classificationTimeouts.get(message));
-        classificationTimeouts.delete(message);
-        message.setAttribute(answerClassificationAttribute, data.answersQuestion ? "yes" : "no");
-        if (data.answersQuestion) {
-          addAnswerBanner(message);
-        } else {
-          removeAnswerBanner(message);
-        }
-      })
-      .catch((error) => {
-        clearTimeout(classificationTimeouts.get(message));
-        classificationTimeouts.delete(message);
-        message.setAttribute(answerClassificationAttribute, "unavailable");
-        removeAnswerBanner(message);
-        if (error.name !== "AbortError") {
-          console.info("[Answer classification] Local analysis server is unavailable; the answer was left visible.");
-        }
-      });
-  }
+  message.setAttribute(answerClassificationAttribute, "pending");
+  chrome.runtime.sendMessage({ type: "classify", question, answer }, (data) => {
+    if (chrome.runtime.lastError || !data || data.error) {
+      message.setAttribute(answerClassificationAttribute, "unavailable");
+      removeAnswerBanner(message);
+      console.info("[Answer classification] Unavailable:", chrome.runtime.lastError?.message || data?.error);
+      return;
+    }
+    message.setAttribute(answerClassificationAttribute, data.answersQuestion ? "yes" : "no");
+    if (data.answersQuestion) addAnswerBanner(message);
+    else removeAnswerBanner(message);
+  });
+}
 
   function scheduleAnswerClassification(question, message) {
     if (message.hasAttribute(answerClassificationAttribute)) {

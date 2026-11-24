@@ -3,10 +3,12 @@
   "name": "ChatGPT Conversation Guard",
   "description": "Checks ChatGPT answers and asks before revealing them.",
   "version": "1.0.0",
+  "background": { "service_worker": "background.js" },
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://chat.openai.com/*",
-    "http://127.0.0.1:3000/*"
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.anthropic.com/*"
   ],
   "permissions": [
     "storage"
