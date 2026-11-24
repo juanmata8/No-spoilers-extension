@@ -1,0 +1,34 @@
+/* No Spoilers, option A. Monochrome: every colour is derived from the host page's text colour,
+   so the card follows ChatGPT's light and dark themes without its own palette. */
+[data-ns-state="checking"] > :not([data-ns-ui]),
+[data-ns-state="covered"] > :not([data-ns-ui]) { display: none !important; }
+
+[data-ns-ui] { color: inherit; font: 14px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+[data-ns-ui] .ns-icon { display: inline-flex; flex: none; }
+
+.ns-card { border: 1px solid color-mix(in srgb, currentColor 18%, transparent); border-radius: 16px; margin: 4px 0 8px; padding: 16px 20px; }
+.ns-title { align-items: center; display: flex; font-size: 15px; font-weight: 600; gap: 8px; margin: 0 0 6px; }
+.ns-sub { margin: 0 0 12px; opacity: .7; }
+.ns-lines span { background: color-mix(in srgb, currentColor 9%, transparent); border-radius: 4px; display: block; height: 8px; margin-bottom: 8px; }
+.ns-lines span:first-child { width: 90%; }
+.ns-lines span:last-child { margin-bottom: 14px; width: 68%; }
+.ns-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; }
+
+.ns-btn { align-items: center; background: none; border: 1px solid transparent; border-radius: 999px; box-sizing: border-box; color: inherit; cursor: pointer; display: inline-flex; font: inherit; font-weight: 500; gap: 6px; min-height: 36px; padding: 0 14px; }
+.ns-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.ns-primary { background: color-mix(in srgb, currentColor 12%, transparent); font-weight: 600; }
+.ns-primary:hover { background: color-mix(in srgb, currentColor 18%, transparent); }
+.ns-secondary { border-color: color-mix(in srgb, currentColor 28%, transparent); }
+.ns-secondary:hover, .ns-quiet:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
+.ns-quiet { opacity: .75; }
+.ns-quiet:hover { opacity: 1; }
+
+.ns-mark { align-items: center; display: flex; flex-wrap: wrap; font-size: 13px; gap: 4px; margin: 0 0 6px; }
+.ns-mark > .ns-icon, .ns-mark-label { opacity: .85; }
+.ns-mark-label { font-weight: 600; margin-right: 6px; }
+.ns-mark .ns-btn { min-height: 28px; padding: 0 10px; }
+
+.ns-checking { align-items: center; display: flex; gap: 8px; opacity: .7; padding: 6px 0; }
+.ns-checking .ns-icon { animation: ns-pulse 1.2s ease-in-out infinite; }
+@keyframes ns-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .ns-checking .ns-icon { animation: none; } }
