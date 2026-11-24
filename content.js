@@ -29,7 +29,7 @@
     /* ---- shared frosted glass ---- */
     .ns-loading::after, .ns-prompt::after {
       content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
-      background: rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(14px) saturate(160%);
       border: 1px solid rgba(255, 255, 255, 0.45);
       box-shadow: 0 8px 32px rgba(31, 38, 135, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -52,7 +52,7 @@
       content: ""; position: absolute; inset: 0; border-radius: inherit;
       padding: 2px;                                   /* ring thickness */
       background: conic-gradient(from var(--ns-angle),
-        transparent 0deg, #6f95ff 40deg, #8f6bff 80deg, transparent 120deg, transparent 360deg);
+        transparent 0deg, #ffd36b 40deg, #ff9f43 80deg, transparent 120deg, transparent 360deg);
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;                        /* keep only the ring */
@@ -89,7 +89,7 @@
     /* ---- dark mode ---- */
     @media (prefers-color-scheme: dark) {
       .ns-loading, .ns-prompt, .ns-btn { color: #e8ecf7; }
-      .ns-loading::after, .ns-prompt::after { background: rgba(30, 32, 40, 0.35); }
+      .ns-loading::after, .ns-prompt::after { background: rgba(30, 32, 40, 0.5); }
       .ns-loading::after { border-color: rgba(255, 255, 255, 0.12); }
       .ns-btn { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
     }
